@@ -43,7 +43,8 @@ def objects(request):
         # and thus should not be filtered with a call to `live`.
         queryset = queryset.live()
 
-    results = map(render_page, queryset)
+    order_by_field_name = getattr(model, 'autocomplete_order_by_field', '-pk')
+    results = map(render_page, queryset.order_by(order_by_field_name))
     return JsonResponse(dict(items=list(results)))
 
 
@@ -78,7 +79,8 @@ def search(request):
     except Exception:
         pass
 
-    results = map(render_page, queryset[:limit])
+    order_by_field_name = getattr(model, 'autocomplete_order_by_field', '-pk')
+    results = map(render_page, queryset.order_by(order_by_field_name)[:limit])
     return JsonResponse(dict(items=list(results)))
 
 
